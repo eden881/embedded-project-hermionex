@@ -1,5 +1,5 @@
 #define DIST_TRIG_PIN 2
-#define DIST_ECHO_PIN 3
+#define DIST_ECHO_PIN 4
 #define DIST_CONSTANT 0.017
 
 #define HEAT_PIN A0
@@ -67,12 +67,11 @@ void loop() {
   // Print results
   Serial.print("Distance (cm): ");
   distance >= 400 || distance <= 2 ? Serial.print("Out of range") : Serial.print(distance);
-  Serial.print(", temperature: ");
-  Serial.print(temperature);
-  Serial.print("C");
+  Serial.print(", temperature (C): ");
+  isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);
   Serial.print(", light: ");
   Serial.println(light);
 
   // Delay
-  delay(1000);
+  delay(200);
 }
