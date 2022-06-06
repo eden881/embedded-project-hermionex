@@ -1,0 +1,30 @@
+name: Compile Sketch
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  compile-sketch:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Compile sketch
+        uses: arduino/compile-sketches@v1.0.1
+        with:
+          # Compile for Arduino Uno
+          fqbn: arduino:avr:uno
+          sketch-paths: |
+            - ./
+          libraries: |
+            - name: DHT sensor library
