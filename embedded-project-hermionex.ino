@@ -1,3 +1,10 @@
+#include <Servo.h>
+#include <SoftwareSerial.h>
+ 
+#define BT_TX_PIN 4
+#define BT_RX_PIN 2
+#define BT_PIN 13
+
 #define DIST_TRIG_PIN 2
 #define DIST_ECHO_PIN 4
 #define DIST_CONSTANT 0.017
@@ -11,21 +18,26 @@
 DHT dht(HEAT_PIN, DHT11);
 
 void setup() {
+  // Blutooth
+  SoftwareSerial BT(BT_TX_PIN, BT_RX_PIN); // TX, RX on arduino (RX, Tx on bluetooth)
+  pinMode(13,OUTPUT);
+  Serial.println("Hello");
+  BT.begin(9600);
+  BT.print("Hello"); //Test
+   
   // Distance sensor
   pinMode(DIST_TRIG_PIN, OUTPUT);
   pinMode(DIST_ECHO_PIN, INPUT);
 
   // Heat sensor
   pinMode(HEAT_PIN, INPUT);
-  dht.begin();
-
-  // Light sensor
-  pinMode(LIGHT_PIN, INPUT);
 
   // Serial
   Serial.begin(9600);
-}
 
+  
+ }
+ 
 // ========== DISTANCE ==========
 
 float distanceSensor() {
@@ -58,20 +70,41 @@ int lightSensor() {
 
 // ========== MAIN ==========
 
-void loop() {
-  // Data calculation
+void loop(){
+  char cmd;
   float distance = distanceSensor();
   float temperature = heatSensor();
   int light = lightSensor();
 
-  // Print results
   Serial.print("Distance (cm): ");
   distance >= 400 || distance <= 2 ? Serial.print("Out of range") : Serial.print(distance);
-  Serial.print(", temperature (C): ");
-  isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);
-  Serial.print(", light: ");
-  Serial.println(light);
-
-  // Delay
-  delay(200);
+  
+  if (BT.available()){
+   cmd=BT.read();
+   //Serial.println(cmd);
+   switch(cmd) {
+      case 1: // On
+        myservo.write(180);
+        break;
+       
+      case 2: // Off
+        myservo.write(180);
+        break;
+       
+      case 3:
+        Serial.print(", temperature (C): ");
+        isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);        
+        break;
+       
+      case 4:
+        // code block
+        break;
+       
+      case 5:
+        // code block
+        break;
+       
+      default:
+        // code block
+  }
 }
