@@ -1,5 +1,6 @@
-#include <Servo.h>
+
 #include <SoftwareSerial.h>
+#include <Servo.h>
  
 #define BT_TX_PIN 4
 #define BT_RX_PIN 2
@@ -14,16 +15,16 @@
 
 #define LIGHT_PIN A2
 
-#include "DHT.h"
-DHT dht(HEAT_PIN, DHT11);
+//#include "DHT.h"
+//DHT dht(HEAT_PIN, DHT11);
+SoftwareSerial BT(BT_TX_PIN, BT_RX_PIN); // TX, RX on arduino (RX, Tx on bluetooth)
+Servo myservo; 
 
 void setup() {
   // Blutooth
-  SoftwareSerial BT(BT_TX_PIN, BT_RX_PIN); // TX, RX on arduino (RX, Tx on bluetooth)
   pinMode(13,OUTPUT);
-  Serial.println("Hello");
-  BT.begin(9600);
-  BT.print("Hello"); //Test
+ Serial.println("Hello");
+ BT.begin(9600);
    
   // Distance sensor
   pinMode(DIST_TRIG_PIN, OUTPUT);
@@ -56,11 +57,11 @@ float distanceSensor() {
 }
 
 // ========== HEAT ==========
-
+/*
 float heatSensor() {
   //return analogRead(HEAT_PIN) * HEAT_CONSTANT;
   return dht.readTemperature();
-}
+}*/
 
 // ========== LIGHT ==========
 
@@ -73,7 +74,7 @@ int lightSensor() {
 void loop(){
   char cmd;
   float distance = distanceSensor();
-  float temperature = heatSensor();
+ // float temperature = heatSensor();
   int light = lightSensor();
 
   Serial.print("Distance (cm): ");
