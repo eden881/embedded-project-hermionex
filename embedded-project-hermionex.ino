@@ -23,8 +23,8 @@ Servo myservo;
 void setup() {
   // Blutooth
   pinMode(13,OUTPUT);
- Serial.println("Hello");
- BT.begin(9600);
+  Serial.println("Hello");
+  BT.begin(9600);
    
   // Distance sensor
   pinMode(DIST_TRIG_PIN, OUTPUT);
@@ -77,35 +77,39 @@ void loop(){
  // float temperature = heatSensor();
   int light = lightSensor();
 
-  Serial.print("Distance (cm): ");
-  distance >= 400 || distance <= 2 ? Serial.print("Out of range") : Serial.print(distance);
+//  Serial.print("Distance (cm): ");
+//  distance >= 400 || distance <= 2 ? Serial.print("Out of range") : Serial.print(distance);
   
   if (BT.available()){
-   cmd=BT.read();
-   //Serial.println(cmd);
-   switch(cmd) {
-      case 1: // On
+  cmd=BT.read();
+  Serial.println(cmd);
+  switch(cmd) {
+    case 1: // On
+      myservo.write(180);
+      Serial.println(cmd);
+
+      break;
+    case 2: // Off
         myservo.write(180);
         break;
        
-      case 2: // Off
-        myservo.write(180);
-        break;
+    case 3:
+//        Serial.print(", temperature (C): ");
+//        isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);        
+       break;
        
-      case 3:
-        Serial.print(", temperature (C): ");
-        isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);        
-        break;
-       
-      case 4:
+    case 4:
         // code block
-        break;
+      break;
        
-      case 5:
+    case 5:
         // code block
-        break;
+      break;
        
-      default:
+    default:
         // code block
+                break;
+
   }
+}
 }
