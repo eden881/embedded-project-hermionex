@@ -15,8 +15,8 @@
 
 #define LIGHT_PIN A2
 
-//#include "DHT.h"
-//DHT dht(HEAT_PIN, DHT11);
+#include "DHT.h"
+DHT dht(HEAT_PIN, DHT11);
 SoftwareSerial BT(BT_TX_PIN, BT_RX_PIN); // TX, RX on arduino (RX, Tx on bluetooth)
 Servo myservo; 
 
@@ -57,11 +57,11 @@ float distanceSensor() {
 }
 
 // ========== HEAT ==========
-/*
+
 float heatSensor() {
-  //return analogRead(HEAT_PIN) * HEAT_CONSTANT;
+  return analogRead(HEAT_PIN) * HEAT_CONSTANT;
   return dht.readTemperature();
-}*/
+}
 
 // ========== LIGHT ==========
 
@@ -74,38 +74,44 @@ int lightSensor() {
 void loop(){
   char cmd;
   float distance = distanceSensor();
- // float temperature = heatSensor();
+  float temperature = heatSensor();
   int light = lightSensor();
 
   Serial.print("Distance (cm): ");
   distance >= 400 || distance <= 2 ? Serial.print("Out of range") : Serial.print(distance);
   
   if (BT.available()){
-   cmd=BT.read();
-   //Serial.println(cmd);
-   switch(cmd) {
+    
+    cmd=BT.read();
+    //Serial.println(cmd);
+    
+    switch(cmd) {
       case 1: // On
+        Serial.println("Executing case 1");
         myservo.write(180);
         break;
        
       case 2: // Off
+        Serial.println("Executing case 2");
         myservo.write(180);
         break;
        
       case 3:
+        Serial.println("Executing case 3");
         Serial.print(", temperature (C): ");
         isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);        
         break;
        
       case 4:
-        // code block
+        Serial.println("Executing case 4");
         break;
        
       case 5:
-        // code block
+        Serial.println("Executing case 5");
         break;
        
       default:
-        // code block
+        Serial.println("Executing default case");
+    }
   }
 }
