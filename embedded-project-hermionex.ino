@@ -10,26 +10,16 @@
 #define DIST_ECHO_PIN 7
 #define DIST_CONSTANT 0.017
 
-#define HEAT_PIN A0
-#define HEAT_CONSTANT 0.48828125
-
-#define LIGHT_PIN A2
-
 #define RED_LIGHT_PIN 11
 #define GREEN_LIGHT_PIN 10
 #define BLUE_LIGHT_PIN 9
 
 #define SERVO_PIN 4
 
-#define  BUZZER_PIN 12
+#define BUZZER_PIN 12
 
-
-//#include "DHT.h"
-//DHT dht(HEAT_PIN, DHT11);
 SoftwareSerial BT(BT_TX_PIN, BT_RX_PIN); // TX, RX on arduino (RX, Tx on bluetooth)
 Servo myservo;
-
-
 
 #define NOTE_B0  31
 #define NOTE_C1  33
@@ -184,6 +174,10 @@ int notes = sizeof(melody) / sizeof(melody[0]) / 2;
 int wholenote = (60000 * 4) / tempo;
 
 int divider = 0, noteDuration = 0;
+
+// For the weehuweehu
+bool toneSelector = false;
+
 void setup()
 {
   // Blutooth
@@ -203,13 +197,8 @@ void setup()
   pinMode(GREEN_LIGHT_PIN, OUTPUT);
   pinMode(BLUE_LIGHT_PIN, OUTPUT);
 
-  //Servo
+  // Servo
    myservo.attach(SERVO_PIN);
-
-  //Restart
-  Serial.begin(9600);
-  Serial.println("How to Reset Arduino Programmatically");
-
 }
 
 // ========== DISTANCE ==========
@@ -274,54 +263,47 @@ void loop()
   char cmd;
   float distance = distanceSensor();
 
-  distance <= 20 ? RGB_color(255, 0, 0) : RGB_color(0, 255, 0); // Red : Green
-  distance <= 20 ? tone(BUZZER_PIN, 900) : noTone(BUZZER_PIN); // Red : Green
-
-
-
+  if (distance <= 20) {
+    RGB_color(255, 0, 0); // Red
+    tone(BUZZER_PIN, toneSelector ? 1000 : 900);
+    delay(250);
+    toneSelector = !toneSelector;
+  }
+  else {
+    RGB_color(0, 255, 0); // Green
+    noTone(BUZZER_PIN);
+  }
 
   if (BT.available())
   {
-
     cmd = BT.read();
-     Serial.println(cmd);
+    Serial.println(cmd);
 
     switch (cmd)
     {
-    case '1': // On
-      Serial.println("Executing case 1");
-      myservo.write(180);
-      RGB_color(0, 255, 255); // Cyan
+      case '1': // On
+        Serial.println("Executing case 1");
+        myservo.write(180);
+        RGB_color(0, 255, 255); // Cyan
+        song();
+        break;
 
-      song();
+      case '2': // Off
+    
+        Serial.println("Executing case 2");
+        myservo.write(0);
+        break;
 
+      case '3':
+        Serial.println("Executing case 3");
+        break;
 
-      break;
+      case '4':
+        Serial.println("Executing case 4");
+        break;
 
-//    case '2': // Off
-//    
-//      Serial.println("Executing case 2");
-//      myservo.write(0);
-//
-//
-//      break;
-//
-//    case '3':
-////      Serial.println("Executing case 3");
-////      Serial.print(", temperature (C): ");
-////      isnan(temperature) ? Serial.print("Error") : Serial.print(temperature);
-//      break;
-//
-//    case '4':
-//      Serial.println("Executing case 4");
-//      break;
-//
-//    case '5':
-//      Serial.println("Executing case 5");
-//      break;
-
-    default:
-      Serial.println("Executing default case");
+      default:
+        Serial.println("Executing default case");
     }
   }
 }
